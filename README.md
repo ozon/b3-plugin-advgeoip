@@ -29,7 +29,7 @@ It does the same as [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugi
 Setup the Path to the GeoIP.dat into the `plugin_advgeoip.ini` file.
 
 ## FAQ
-**Q**: Why you do not fork [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugin and created improved?
+**Q**: Why you do not fork [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugin and created improved?  
 **A**: The code is trivial and my changes are the same as new write.
 
 ## Thanks
