@@ -47,8 +47,9 @@ class AdvgeoipPlugin(Plugin):
         # init geoip
         self._geoip = pygeoip.GeoIP(self._geoip_db, pygeoip.MEMORY_CACHE)
 
-        # register commands
+        # register commands and events
         self._register_commands()
+        self.registerEvent(b3.events.EVT_CLIENT_AUTH)
 
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
