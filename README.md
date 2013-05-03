@@ -16,7 +16,8 @@ It does the same as [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugi
 [extplugins/conf/plugin_advgeoip.ini](extplugins/conf/plugin_advgeoip.ini) into your `b3/conf` folder
 
 2. This plugin requires the pygeoip module. That can be installed with the command `easy_install pygeoip`.
-  If you are unsure or do not want to install pygeoip, also copy the folder [extplugins/pygeoip](extplugins/pygeoip) to your into your `b3/extplugins` directory.
+  If you are unsure or do not want to install pygeoip, also copy the folder [extplugins/pygeoip](extplugins/pygeoip) to your into your `b3/` directory.
+  If you are using for example the Windows Binary Releases of B3, copy the folder `pygeoip` to the B3 installation Directory.
 
 3. Obtain the [GeoIP Lite Country Database](http://dev.maxmind.com/geoip/legacy/geolite) and extract the GeoIP.dat to a folder of your choice. Preferably you place the GeoIP.dat in your plugin directory.
 
