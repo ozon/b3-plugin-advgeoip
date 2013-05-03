@@ -51,7 +51,9 @@ class AdvgeoipPlugin(Plugin):
         self._register_commands()
 
     def onEvent(self, event):
-        pass
+        if event.type == b3.events.EVT_CLIENT_AUTH:
+            # set country code as attribute
+            setattr(event.client, 'country', self._geoip.country_code_by_addr(event.client.ip))
 
     def cmd_geoip(self, data, client, cmd=None):
         """\
