@@ -30,7 +30,7 @@ __author__ = 'ozon'
 __version__ = '0.1.0'
 
 
-class Advgeoip(Plugin):
+class AdvgeoipPlugin(Plugin):
     _adminPlugin = None
     _geoip_db = 'GeoIP.dat'
     _geoip = None
