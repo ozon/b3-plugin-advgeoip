@@ -3,6 +3,7 @@ Advanced GeoIP plugin for [B3](http://www.bigbrotherbot.net/ "BigBrotherBot")
 This plugin extends B3, so that he can retrieve the country name of players.
 It does the same as [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugin.
 
+The Client Object gets a new property that includes a country code. This is useful if other plugins require the country code.
 
 ## Usage
 
@@ -33,7 +34,7 @@ Setup the Path to the GeoIP.dat into the `plugin_advgeoip.ini` file.
 **Q**: Why you do not fork [krsanky's geoip](https://github.com/krsanky/b3-geoip) plugin and created improved?  
 **A**: The code is trivial and my changes are the same as new write.
 
-**Q**: Why you do not use the GeoIP City database?  
+**Q**: Why you do not use the GeoIP City database?
 **A**: For most scenarios, the country's name is interesting.
 The disclosures are inaccurate - they contain in most cases, not the location of the player.
 The GeoIP City database is many times larger than the country database.
