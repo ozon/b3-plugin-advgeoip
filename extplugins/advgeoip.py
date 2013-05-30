@@ -34,6 +34,7 @@ class AdvgeoipPlugin(Plugin):
     _adminPlugin = None
     _geoip_db = 'GeoIP.dat'
     _geoip = None
+    _geo_db_type = None
 
     def onLoadConfig(self):
         self._load_settings()
@@ -45,7 +46,13 @@ class AdvgeoipPlugin(Plugin):
             self.error('Could not find admin plugin')
             return False
         # init geoip
-        self._geoip = pygeoip.GeoIP(self._geoip_db, pygeoip.MEMORY_CACHE)
+        if self._geo_db_type == 'country':
+            self._geoip = pygeoip.GeoIP(self._geoip_db, pygeoip.MEMORY_CACHE)
+        elif self._geo_db_type == 'city':
+            self._geoip = pygeoip.GeoIP(self._geoip_db)
+        else:
+            self.error('GeoIP initialization failed. Check your configuration.')
+            return False
 
         # register commands and events
         self._register_commands()
@@ -53,8 +60,15 @@ class AdvgeoipPlugin(Plugin):
 
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
-            # set country code as attribute
-            setattr(event.client, 'country', self._geoip.country_code_by_addr(event.client.ip))
+            # if City database - set country and city as attribute
+            if self._geo_db_type == 'city':
+                record = self._geoip.record_by_addr(event.client.ip)
+
+                setattr(event.client, 'country', record.get('country_code'))
+                setattr(event.client, 'city', record.get('city'))
+            else:
+                setattr(event.client, 'country', self._geoip.country_code_by_addr(event.client.ip))
+                setattr(event.client, 'city', None)
 
     def cmd_geoip(self, data, client, cmd=None):
         """\
@@ -112,3 +126,30 @@ class AdvgeoipPlugin(Plugin):
             except NoOptionError:
                 self.warning('conf "geoip_db" not found, using defaults.')
 
+            try:
+                _geo_db_type = self.config.getpath('settings', 'db_type')
+                if _geo_db_type not in ('city', 'country'):
+                    raise NoOptionError
+                self._geo_db_type = _geo_db_type
+            except NoOptionError:
+                self.error('conf "db_type" not found or wrong value, use "city" or "country".')
+
+if __name__ == '__main__':
+    # create a fake console which emulates B3
+    from b3.fake import fakeConsole, joe, superadmin, simon
+
+    p = AdvgeoipPlugin(fakeConsole, 'conf/plugin_advgeoip.ini')
+    # call onStartup() as the real B3 would do
+    p.onStartup()
+    # make superadmin connect to the fake game server on slot 0
+    joe.ip = '8.8.4.4'
+    superadmin.connects(cid=1)
+    # make joe connect to the fake game server on slot 1
+    joe.ip = '8.8.8.8'
+    joe.connects(cid=1)
+    # make joe connect to the fake game server on slot 2
+
+    simon.connects(cid=2)
+    # superadmin put joe in group user
+    #superadmin.says('!putgroup joe user')
+    #superadmin.says('!putgroup simon user')
