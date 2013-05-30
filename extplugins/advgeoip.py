@@ -60,17 +60,19 @@ class AdvgeoipPlugin(Plugin):
 
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
-            # if City database - set country and city as attribute
-            if self._geo_db_type == 'city':
-                record = self._geoip.record_by_addr(event.client.ip)
+            _data = dict(country_code=None, country=None, city=None)
+            if len(event.client.ip) > 0:
+                if self._geo_db_type == 'city':
+                    record = self._geoip.record_by_addr(event.client.ip)
 
-                setattr(event.client, 'country_code', record.get('country_code'))
-                setattr(event.client, 'country', record.get('country_name'))
-                setattr(event.client, 'city', record.get('city'))
-            else:
-                setattr(event.client, 'country_code', self._geoip.country_code_by_addr(event.client.ip))
-                setattr(event.client, 'country', self._geoip.country_name_by_addr(event.client.ip))
-                setattr(event.client, 'city', None)
+                    _data['country_code'] = record.get('country_code')
+                    _data['country'] = record.get('country_name')
+                    _data['city'] = record.get('city')
+                else:
+                    _data['country_code'] = self._geoip.country_code_by_addr(event.client.ip)
+                    _data['country'] = self._geoip.country_code_by_addr(event.client.ip)
+
+            [setattr(event.client, k, v) for k, v in _data.items()]
 
     def cmd_geoip(self, data, client, cmd=None):
         """\
