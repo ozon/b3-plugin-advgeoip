@@ -27,7 +27,7 @@ except ImportError:
     print "Failed to load pygeoip modules :("
 
 __author__ = 'ozon'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 class AdvgeoipPlugin(Plugin):
