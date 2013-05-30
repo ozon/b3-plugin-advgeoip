@@ -64,10 +64,10 @@ class AdvgeoipPlugin(Plugin):
             if self._geo_db_type == 'city':
                 record = self._geoip.record_by_addr(event.client.ip)
 
-                setattr(event.client, 'country', record.get('country_code'))
+                setattr(event.client, 'country_code', record.get('country_code'))
                 setattr(event.client, 'city', record.get('city'))
             else:
-                setattr(event.client, 'country', self._geoip.country_code_by_addr(event.client.ip))
+                setattr(event.client, 'country_code', self._geoip.country_code_by_addr(event.client.ip))
                 setattr(event.client, 'city', None)
 
     def cmd_geoip(self, data, client, cmd=None):
