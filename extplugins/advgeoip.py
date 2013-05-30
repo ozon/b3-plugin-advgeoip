@@ -86,12 +86,10 @@ class AdvgeoipPlugin(Plugin):
         # If we found the given player, get the Country name by IP
         if sclient:
             msg = 'B3 could not determine the country name.'
-            if len(sclient.ip) > 0:
-                _country = self._geoip.country_name_by_addr(sclient.ip)
-                if len(_country) > 0:
-                    msg = '%s is connected from %s.' % (sclient.name, _country)
-            else:
-                msg = 'B3 could not find %s\'s IP.' % sclient.name
+            if sclient.city:
+                msg = '%s is connected from %s, %s.' % (sclient.name, sclient.city, sclient.country)
+            elif sclient.country:
+                msg = '%s is connected from %s.' % (sclient.name, sclient.country)
             # Tell the client the results
             client.message(msg)
         # If no data given or the given player not exists - return
