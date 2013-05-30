@@ -35,7 +35,8 @@ Setup the Path to the GeoIP.dat into the `plugin_advgeoip.ini` file.
 - `!geoip <playername>` Displays the country and the city (if city db used) of the specified player is connected
 
 ## Changelog
-### v0.2
+
+#### v0.2
 - allows the use of the city database
 - rename client attributes
 
