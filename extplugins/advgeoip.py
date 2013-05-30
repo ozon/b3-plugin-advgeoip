@@ -135,23 +135,3 @@ class AdvgeoipPlugin(Plugin):
                 self._geo_db_type = _geo_db_type
             except NoOptionError:
                 self.error('conf "db_type" not found or wrong value, use "city" or "country".')
-
-if __name__ == '__main__':
-    # create a fake console which emulates B3
-    from b3.fake import fakeConsole, joe, superadmin, simon
-
-    p = AdvgeoipPlugin(fakeConsole, 'conf/plugin_advgeoip.ini')
-    # call onStartup() as the real B3 would do
-    p.onStartup()
-    # make superadmin connect to the fake game server on slot 0
-    joe.ip = '8.8.4.4'
-    superadmin.connects(cid=1)
-    # make joe connect to the fake game server on slot 1
-    joe.ip = '8.8.8.8'
-    joe.connects(cid=1)
-    # make joe connect to the fake game server on slot 2
-
-    simon.connects(cid=2)
-    # superadmin put joe in group user
-    #superadmin.says('!putgroup joe user')
-    #superadmin.says('!putgroup simon user')
