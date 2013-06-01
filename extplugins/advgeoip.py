@@ -24,10 +24,15 @@ from ConfigParser import NoOptionError
 try:
     import pygeoip
 except ImportError:
-    print "Failed to load pygeoip modules :("
+    import sys, os
+    sys.path.append(os.path.join(os.path.dirname(__file__)))
+    try:
+        import pygeoip
+    except ImportError:
+        print "Failed to load pygeoip modules :("
 
 __author__ = 'ozon'
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
 class AdvgeoipPlugin(Plugin):
