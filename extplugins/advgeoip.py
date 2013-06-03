@@ -63,21 +63,24 @@ class AdvgeoipPlugin(Plugin):
         self._register_commands()
         self.registerEvent(b3.events.EVT_CLIENT_AUTH)
 
+    def _add_geoattr(self, client):
+        _data = dict(country_code=None, country=None, city=None)
+        if len(client.ip) > 0:
+            if self._geo_db_type == 'city':
+                record = self._geoip.record_by_addr(client.ip)
+
+                _data['country_code'] = record.get('country_code')
+                _data['country'] = record.get('country_name')
+                _data['city'] = record.get('city')
+            else:
+                _data['country_code'] = self._geoip.country_code_by_addr(client.ip)
+                _data['country'] = self._geoip.country_code_by_addr(client.ip)
+
+        [setattr(client, k, v) for k, v in _data.items()]
+
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
-            _data = dict(country_code=None, country=None, city=None)
-            if len(event.client.ip) > 0:
-                if self._geo_db_type == 'city':
-                    record = self._geoip.record_by_addr(event.client.ip)
-
-                    _data['country_code'] = record.get('country_code')
-                    _data['country'] = record.get('country_name')
-                    _data['city'] = record.get('city')
-                else:
-                    _data['country_code'] = self._geoip.country_code_by_addr(event.client.ip)
-                    _data['country'] = self._geoip.country_code_by_addr(event.client.ip)
-
-            [setattr(event.client, k, v) for k, v in _data.items()]
+            self._add_geoattr(event.client)
 
     def cmd_geoip(self, data, client, cmd=None):
         """\
