@@ -94,11 +94,11 @@ class AdvgeoipPlugin(Plugin):
         if data:
             sclient = self._adminPlugin.findClientPrompt(data)
 
-
             # if bo client found on current session, look on DB
             if not sclient:
+                _search = {'id': data[1:]} if data.startswith('#') else {'name': data}
                 try:
-                    result = self.console.storage.getClientsMatching({'name': data})[0]
+                    result = self.console.storage.getClientsMatching(_search)[0]
                     _old_or_now = 'has'
                     sclient = self._add_geoattr(result)
                 except IndexError:
