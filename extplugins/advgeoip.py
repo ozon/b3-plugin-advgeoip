@@ -77,6 +77,7 @@ class AdvgeoipPlugin(Plugin):
                 _data['country'] = self._geoip.country_code_by_addr(client.ip)
 
         [setattr(client, k, v) for k, v in _data.items()]
+        return client
 
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
@@ -88,18 +89,29 @@ class AdvgeoipPlugin(Plugin):
         """
 
         sclient = None
+        _old_or_now = 'is'
         # Find the given player
         if data:
-            sclient = self._adminPlugin.findClientPrompt(data, client=client)
+            sclient = self._adminPlugin.findClientPrompt(data)
+
+
+            # if bo client found on current session, look on DB
+            if not sclient:
+                try:
+                    result = self.console.storage.getClientsMatching({'name': data})[0]
+                    _old_or_now = 'has'
+                    sclient = self._add_geoattr(result)
+                except IndexError:
+                    client.message('No players found.')
         else:
             client.message('No player name given. Try !help geoip')
         # If we found the given player, get the Country name by IP
         if sclient:
             msg = 'B3 could not determine the country name.'
             if sclient.city:
-                msg = '%s is connected from %s, %s.' % (sclient.name, sclient.city, sclient.country)
+                msg = '%s %s connected from %s, %s.' % (sclient.name, _old_or_now, sclient.city, sclient.country)
             elif sclient.country:
-                msg = '%s is connected from %s.' % (sclient.name, sclient.country)
+                msg = '%s %s connected from %s.' % (sclient.name, _old_or_now, sclient.country)
             # Tell the client the results
             client.message(msg)
         # If no data given or the given player not exists - return
