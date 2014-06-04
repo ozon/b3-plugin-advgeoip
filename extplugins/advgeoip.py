@@ -62,9 +62,10 @@ class AdvgeoipPlugin(Plugin):
         # register commands and events
         self._register_commands()
         self.registerEvent(b3.events.EVT_CLIENT_AUTH)
+        self.registerEvent(b3.events.EVT_PUNKBUSTER_NEW_CONNECTION)
 
     def _add_geoattr(self, client):
-        _data = dict(country_code=None, country=None, city=None)
+        _data = dict(country_code='US', country='', city='')
         if len(client.ip) > 0:
             if self._geo_db_type == 'city':
                 record = self._geoip.record_by_addr(client.ip)
@@ -81,6 +82,8 @@ class AdvgeoipPlugin(Plugin):
 
     def onEvent(self, event):
         if event.type == b3.events.EVT_CLIENT_AUTH:
+            self._add_geoattr(event.client)
+        elif event.type == b3.events.EVT_PUNKBUSTER_NEW_CONNECTION:
             self._add_geoattr(event.client)
 
     def cmd_geoip(self, data, client, cmd=None):
